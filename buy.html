@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Spiti hub - Buy</title>
+    <style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+    }
+    header {
+        background-color: #4A90E2;
+        color: white;
+        padding: 20px 0;
+        text-align: center;
+    }
+    footer {
+        background: #4A90E2;
+        color: #fff;
+        padding: 20px 0;
+        text-align: center;
+        font-size: 14px;
+        margin-top: 150px;
+    }
+    .main {
+        margin-top: 50px;
+        width: 100%;
+        border-collapse: collapse;
+    }
+    .main th, .main td {
+        border: 1px solid #ddd;
+        padding: 8px;
+        text-align: center;
+    }
+    .main th {
+        background-color: #f2f2f2;
+    }
+    .but {
+        height: 40px;
+        width: 60px;
+        border-radius: 5px;
+        background-color: #4CAF50;
+        color: white;
+        border: none;
+        cursor: pointer;
+    }
+    .but:hover {
+        background-color: #45a049;
+    }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Spiti hub</h1>
+    </header>
+
+    <div style="padding: 20px;">
+        <table class="main" id="propertyTable">
+            <tr>
+                <th width="5%">id</th>
+                <th width="15%">Image</th>
+                <th width="10%">Address</th>
+                <th width="10%">City</th>
+                <th width="10%">State</th>
+                <th width="10%">Phone</th>
+                <th width="10%">Price</th>
+                <th width="20%">Description</th>
+                <th width="15%">Rent</th>
+            </tr>
+        </table>
+    </div>
+
+    <script>
+        // Load data from localStorage
+        let properties = JSON.parse(localStorage.getItem('properties'));
+        if (!properties) {
+            properties = [{ id: 1, image: 'spiyihun2.jpeg', Address: '123 Main St', city: 'Anytown', state: 'USA', phone: '1234567890', price: '500', description: 'Nice home' }];
+            localStorage.setItem('properties', JSON.stringify(properties));
+        }
+
+        function renderTable() {
+            const table = document.getElementById('propertyTable');
+            // Clear existing rows except headers
+            while(table.rows.length > 1) {
+                table.deleteRow(1);
+            }
+            
+            // Remove any "No records found" messages
+            const emptyMsgs = document.querySelectorAll('.empty-record-msg');
+            emptyMsgs.forEach(msg => msg.remove());
+
+            if (properties.length > 0) {
+                properties.forEach(p => {
+                    const tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td>${p.id}</td>
+                        <td><img src="${p.image}" height="100px" width="100px"></td>
+                        <td>${p.Address}</td>
+                        <td>${p.city}</td>
+                        <td>${p.state}</td>
+                        <td>${p.phone}</td>
+                        <td>${p.price}</td>
+                        <td>${p.description}</td>
+                        <td>
+                            <center><button class="but" onclick="rentProperty(${p.id})">Rent</button></center>
+                        </td>
+                    `;
+                    table.appendChild(tr);
+                });
+            } else {
+                table.insertAdjacentHTML('afterend', '<p class="empty-record-msg" style="text-align: center;">No records found</p>');
+            }
+        }
+
+        // Initial render
+        renderTable();
+
+        function rentProperty(id) {
+            if (confirm('Are you sure you want to rent this home?')) {
+                // Delete from localStorage and update UI
+                properties = properties.filter(p => p.id !== id);
+                localStorage.setItem('properties', JSON.stringify(properties));
+                alert('Property rented successfully! It has been removed from the listings.');
+                renderTable();
+            }
+        }
+    </script>
+    
+    <footer>
+        <div class="container">
+            <p>&copy; 2024 Spiti Hub. All rights reserved.</p>
+            <p>123 Main Street, Anytown, USA</p>
+            <p>Email: info@spitihub.com | Phone: (123) 456-7890</p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sell a Home - spitihub</title>
+    <link rel="stylesheet" href="sale.css">
+</head>
+<body>
+    <header>
+        <h1>Spitihub</h1>
+    </header>
+    
+    <main>
+        <h2>Rent a Home</h2>
+        <form id="sellForm">
+           <label for="file">image:</label>
+            <input type="file" id="file" name="file" accept="image/*" required>
+
+            <label for="address">Address:</label>
+            <input type="text" id="address" name="address" required>
+
+            <label for="city">City:</label>
+            <input type="text" id="city" name="city" required>
+
+            <label for="state">State:</label>
+            <input type="text" id="state" name="state" required>
+
+            <label for="phone">phone:</label>
+            <input type="number" id="phone" name="phone" required>
+
+            <label for="price">Price (₹):</label>
+            <input type="number" id="price" name="price" required>
+
+            <label for="description">Description:</label>
+            <textarea id="description" name="description" rows="4" required></textarea>
+
+            <button type="submit">Submit</button>
+        </form>
+    </main>
+    <footer>
+        <p>&copy; 2024 spitihub. All rights reserved.</p>
+    </footer>
+    
+    <script>
+        document.getElementById('sellForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const fileInput = document.getElementById('file');
+            const file = fileInput.files[0];
+            
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    const base64Image = event.target.result;
+                    saveProperty(base64Image);
+                };
+                reader.readAsDataURL(file);
+            } else {
+                saveProperty('');
+            }
+        });
+
+        function saveProperty(imageBase64) {
+            let properties = JSON.parse(localStorage.getItem('properties'));
+            if (!properties) {
+                // Initialize with default property if empty
+                properties = [{ id: 1, image: 'spiyihun2.jpeg', Address: '123 Main St', city: 'Anytown', state: 'USA', phone: '1234567890', price: '500', description: 'Nice home' }];
+            }
+
+            const newId = properties.length > 0 ? Math.max(...properties.map(p => p.id)) + 1 : 1;
+            
+            const newProperty = {
+                id: newId,
+                image: imageBase64,
+                Address: document.getElementById('address').value,
+                city: document.getElementById('city').value,
+                state: document.getElementById('state').value,
+                phone: document.getElementById('phone').value,
+                price: document.getElementById('price').value,
+                description: document.getElementById('description').value
+            };
+
+            properties.push(newProperty);
+            localStorage.setItem('properties', JSON.stringify(properties));
+            
+            alert('Property listed successfully! You can view it in the Find a House section.');
+            document.getElementById('sellForm').reset();
+            window.location.href = 'buy.html';
+        }
+    </script>
+</body>
+</html>
